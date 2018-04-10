@@ -56,15 +56,6 @@
   <build>
     <finalName>mvc</finalName>
     <sourceDirectory>src/main/java</sourceDirectory>
-    <filters>
-      <filter>src/main/resources/application.properties</filter>
-    </filters>
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-        <filtering>true</filtering>
-      </resource>
-    </resources>
     <plugins>
       <!-- 编译插件，此处用来设置jdk的版本，否则默认的版本很低 -->
       <plugin>

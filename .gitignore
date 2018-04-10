@@ -31,7 +31,6 @@ buildNumber.properties
 
 # Package Files
 *.jar
-*.war
 *.ear
 *.zip
 *.tar.gz
