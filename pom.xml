@@ -9,6 +9,14 @@
   <packaging>war</packaging>
   <name>mvc Maven Webapp</name>
 
+  <repositories>
+    <repository>
+      <id>maven.net.cn</id>
+      <name>oneof the central mirrors in china</name>
+      <url>http://maven.net.cn/content/groups/public/</url>
+    </repository>
+  </repositories>
+
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
