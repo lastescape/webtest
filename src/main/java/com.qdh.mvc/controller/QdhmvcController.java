@@ -14,7 +14,6 @@ public class QdhmvcController {
 
     @RequestMapping(value = "/test", method = RequestMethod.GET)
     @ResponseBody
-    
     public String resultOutput(@RequestParam("e") String input) {
         return input.toUpperCase();
     }
