@@ -17,7 +17,6 @@ import java.util.Objects;
  * Created by qdh on 2018/4/28.
  */
 @Repository(value = "hibernateProductInfoRepository")
-
 public class HibernateProductInfoRepository {
     @Autowired
     private SessionFactory sessionFactory;
