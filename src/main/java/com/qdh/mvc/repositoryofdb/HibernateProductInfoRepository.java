@@ -57,4 +57,14 @@ public class HibernateProductInfoRepository {
         }
         return input;
     }
+    @Transactional(transactionManager = "txManager", readOnly = true)
+    public ProductInfo findProductByCode(String code) {
+        List output = currectSession().createCriteria(ProductInfo.class)
+                .add(Restrictions.eq("product_code", code)).list();
+        if (output.size() > 0) {
+            return (ProductInfo) output.get(0);
+        } else {
+            return new ProductInfo();
+        }
+    }
 }

@@ -53,4 +53,10 @@ public class QdhmvcController {
         hibernateProductInfoRepository.insertOrUpdate(productInfo);
         return productInfo;
     }
+
+    @RequestMapping(value = "/select", method = RequestMethod.GET)
+    @ResponseBody
+    public ProductInfo selectProductByCode(@RequestParam("code") String code){
+        return hibernateProductInfoRepository.findProductByCode(code);
+    }
 }

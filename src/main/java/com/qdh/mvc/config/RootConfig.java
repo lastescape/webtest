@@ -30,7 +30,7 @@ public class RootConfig {
         ComboPooledDataSource dataSource = new ComboPooledDataSource();
         try {
             dataSource.setDriverClass("com.mysql.jdbc.Driver");
-            dataSource.setJdbcUrl("jdbc:mysql://localhost:3306/testdb?characterEncoding=UTF-8");
+            dataSource.setJdbcUrl("jdbc:mysql://localhost:3306/eshop?characterEncoding=UTF-8");
             dataSource.setUser("root");
             dataSource.setPassword("123456");
             dataSource.setMaxPoolSize(40);
