@@ -1,13 +1,16 @@
 package com.qdh.mvc.controller;
 
 import com.qdh.mvc.db.ProductInfo;
+import com.qdh.mvc.pojo.NewsIndexInfo;
 import com.qdh.mvc.pojo.UserInfo;
 import com.qdh.mvc.repositoryofdb.HibernateProductInfoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.jws.soap.SOAPBinding;
 import java.util.ArrayList;
@@ -58,5 +61,23 @@ public class QdhmvcController {
     @ResponseBody
     public ProductInfo selectProductByCode(@RequestParam("code") String code){
         return hibernateProductInfoRepository.findProductByCode(code);
+    }
+
+    @RequestMapping(value = "/h5", method = RequestMethod.GET)
+    public ModelAndView h5Show() {
+        ArrayList<NewsIndexInfo> newsIndexList = new ArrayList<>();
+        NewsIndexInfo newsIndexInfo1 = new NewsIndexInfo();
+        newsIndexInfo1.setTarget_url("#");
+        newsIndexInfo1.setTitle("第一个");
+        NewsIndexInfo newsIndexInfo2 = new NewsIndexInfo();
+        newsIndexInfo2.setTarget_url("#");
+        newsIndexInfo2.setTitle("第二个");
+        newsIndexList.add(newsIndexInfo1);
+        newsIndexList.add(newsIndexInfo2);
+
+        ModelAndView modelAndView = new ModelAndView("dl-kendo-index/dl_kendo_index");
+        modelAndView.addObject("users", newsIndexList);
+
+        return modelAndView;
     }
 }
