@@ -1,5 +1,4 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -71,10 +70,7 @@
               <h3 class="panel-title">剑道新闻</h3>
             </div>
             <div class="panel-body">
-              <div class="list-group">
-                  <c:forEach items="${users}" var="item">
-                      <a href="#" class="list-group-item">${item.title}</a>
-                  </c:forEach>
+              <div class="list-group" id="news-list">
               </div>
             </div>
           </div>
@@ -105,14 +101,43 @@
         </div>
 
         <!-- Main component for a primary marketing message or call to action -->
-        <div id="contact" class="tab-pane">
-          <h1>contact</h1>
-          <p>This example is a quick exercise to illustrate how the default, static and fixed to top navbar work. It includes the responsive CSS and HTML, so it also adapts to your viewport and device.</p>
-          <p>To see the difference between static and fixed top navbars, just scroll.</p>
-          <p>
-            <a class="btn btn-lg btn-primary" href="../../../components/#navbar" role="button">View navbar docs &raquo;</a>
-          </p>
+        <div id="bbs-link" class="tab-pane">
+          <h1>添加新闻信息</h1>
+          <form id="news_add_form">
+            <div class="form-group">
+              <label for="news_title">新闻名称</label>
+              <input type="text" class="form-control" id="news_title" name="newsTitle">
+            </div>
+            <div class="form-group">
+              <label for="news_detail">新闻内容</label>
+              <textarea class="form-control" rows="5" id="news_detail" name="newsDetail"></textarea>
+            </div>
+            <input type="button" class="btn btn-default" id="news_add_btn" value="保存"/>
+          </form>
         </div>
+
+
+
+        <!-- Main component for a primary marketing message or call to action -->
+        <div id="equipment-show" class="tab-pane">
+          <h1>查看新闻信息</h1>
+          <form id="news_find_form">
+            <div class="form-group">
+              <label for="input_news_id">新闻ID</label>
+              <input type="text" class="form-control" id="input_news_id" name="newsId">
+            </div>
+            <input type="button" class="btn btn-default" id="news_find_btn" value="查找"/>
+          </form>
+          <div class="form-group">
+            <label for="news_title_readonly">新闻名称</label>
+            <input class="form-control" id="news_title_readonly" disabled>
+          </div>
+          <div class="form-group">
+            <label for="news_detail_readonly">新闻内容</label>
+            <textarea class="form-control" rows="20" readonly="true" id="news_detail_readonly" disabled></textarea>
+          </div>
+        </div>
+
       </div>
     </div> <!-- /container -->
 
@@ -128,6 +153,29 @@
     <script src="dist/js/common.js"></script>
 
     <script>
+    //首页加载时运行
+    $(function() {
+        $("document").ready(function () {
+            $.ajax({
+                url:'<%=request.getContextPath()%>/news/all',
+                type: 'GET',
+                data: "",
+                contentType:'application/json;charset=utf-8',
+                //返回List或Map，dataType要设置为“json”.
+                dataType:'json',
+                success:function(output){
+                    $(output).each(function (i, value) {
+                        $('#news-list').prepend('<a href="#" class="list-group-item">' + value.newsTitle + '</a>');
+                    });
+                },
+                error : function(xhr) {
+                    alert('error:' + JSON.stringify(xhr));
+                }
+            })
+        });
+    });
+
+
     $(function() {
       $('.nav > li > a').click(function(){
         console.log("hello world!");
@@ -139,14 +187,13 @@
     });
 
     $(function() {
-        //post传参，方式三
+        //商品信息保存ajax
         $("#p_add_btn").click(function(){
             var data=JSON.stringify($("#p_add_form").serializeObject());
             //data可以有三种形式：
             //1.var data={"id":"111","user_name":"abc","user_email":"aaa@sina.com"};
             //2.vat data="id=111&user_name=abc&user_email=aaa@sina.com";
             //3.var data=$("#form1").serialize();
-            alert(data);
             $.ajax({
                 url:'<%=request.getContextPath()%>/update',
                 type: 'POST',
@@ -162,6 +209,56 @@
                 },
                 error : function(XMLHttpRequest, textStatus, errorThrown) {
                     alert(errorThrown);
+                }
+            })
+        });
+    });
+
+    $(function() {
+        //新闻保存ajax
+        $("#news_add_btn").click(function(){
+            var data=JSON.stringify($("#news_add_form").serializeObject());
+            //data可以有三种形式：
+            //1.var data={"id":"111","user_name":"abc","user_email":"aaa@sina.com"};
+            //2.vat data="id=111&user_name=abc&user_email=aaa@sina.com";
+            //3.var data=$("#form1").serialize();
+            $.ajax({
+                url:'<%=request.getContextPath()%>/news/update',
+                type: 'POST',
+                data: data,
+                contentType:'application/json;charset=utf-8',
+                //返回List或Map，dataType要设置为“json”.
+                dataType:'json',
+                success:function(){
+                    alert('保存成功');
+                },
+                error : function() {
+                    alert('保存失败');
+                }
+            })
+        });
+    });
+
+    $(function() {
+        //新闻查询ajax
+        $("#news_find_btn").click(function(){
+            var data=$("#news_find_form").serialize();
+            $.ajax({
+                url:'<%=request.getContextPath()%>/news/select',
+                type: 'GET',
+                data: data,
+                contentType:'application/json;charset=utf-8',
+                //返回List或Map，dataType要设置为“json”.
+                dataType:'json',
+                success:function(output){
+                    var newsTitle = output.newsTitle;
+                    var newsDetail = output.newsDetail;
+                    $('#news_title_readonly').val(newsTitle);
+                    $('#news_detail_readonly').val(newsDetail);
+                    alert('查询成功');
+                },
+                error : function(xhr) {
+                    alert('error:' + JSON.stringify(xhr));
                 }
             })
         });
