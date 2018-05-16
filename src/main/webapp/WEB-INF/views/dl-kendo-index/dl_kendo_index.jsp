@@ -82,12 +82,26 @@
 
         <!-- Main component for a primary marketing message or call to action -->
         <div id="about" class="tab-pane">
-          <h1>about</h1>
-          <p>This example is a quick exercise to illustrate how the default, static and fixed to top navbar work. It includes the responsive CSS and HTML, so it also adapts to your viewport and device.</p>
-          <p>To see the difference between static and fixed top navbars, just scroll.</p>
-          <p>
-            <a class="btn btn-lg btn-primary" href="../../../components/#navbar" role="button">View navbar docs &raquo;</a>
-          </p>
+          <h1>添加商品信息</h1>
+          <form id="p_add_form">
+            <div class="form-group">
+              <label for="product_name">商品名称</label>
+              <input type="text" class="form-control" id="product_name" name="product_name">
+            </div>
+            <div class="form-group">
+              <label for="product_code">商品条码</label>
+              <input type="text" class="form-control" id="product_code" name="product_code">
+            </div>
+            <div class="form-group">
+              <label for="product_image_url">商品图片Url地址</label>
+              <input type="text" class="form-control" id="product_image_url" name="product_comment">
+            </div>
+            <div class="form-group">
+              <label for="product_price">商品价格</label>
+              <input type="text" class="form-control" id="product_price" name="product_price">
+            </div>
+            <input type="button" class="btn btn-default" id="p_add_btn" value="Submit"/>
+          </form>
         </div>
 
         <!-- Main component for a primary marketing message or call to action -->
@@ -111,6 +125,7 @@
     <script src="dist/js/bootstrap.min.js"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="assets/js/ie10-viewport-bug-workaround.js"></script>
+    <script src="dist/js/common.js"></script>
 
     <script>
     $(function() {
@@ -122,6 +137,36 @@
         $('#navbar').attr('aria-expanded', false);
       });
     });
+
+    $(function() {
+        //post传参，方式三
+        $("#p_add_btn").click(function(){
+            var data=JSON.stringify($("#p_add_form").serializeObject());
+            //data可以有三种形式：
+            //1.var data={"id":"111","user_name":"abc","user_email":"aaa@sina.com"};
+            //2.vat data="id=111&user_name=abc&user_email=aaa@sina.com";
+            //3.var data=$("#form1").serialize();
+            alert(data);
+            $.ajax({
+                url:'<%=request.getContextPath()%>/update',
+                type: 'POST',
+                data: data,
+                contentType:'application/json;charset=utf-8',
+                //返回List或Map，dataType要设置为“json”.
+                dataType:'json',
+                success:function(data){
+                    alert('success');
+                    $(data).each(function (i, value) {
+                        alert(value);
+                    });
+                },
+                error : function(XMLHttpRequest, textStatus, errorThrown) {
+                    alert(errorThrown);
+                }
+            })
+        });
+    });
+
     </script>
 
   </body>
