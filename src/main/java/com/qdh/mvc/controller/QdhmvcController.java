@@ -63,7 +63,7 @@ public class QdhmvcController {
         return hibernateProductInfoRepository.findProductByCode(code);
     }
 
-    @RequestMapping(value = "/h5", method = RequestMethod.GET)
+    @RequestMapping(value = "/test/h5", method = RequestMethod.GET)
     public ModelAndView h5Show() {
         ArrayList<NewsIndexInfo> newsIndexList = new ArrayList<>();
         NewsIndexInfo newsIndexInfo1 = new NewsIndexInfo();
@@ -79,5 +79,10 @@ public class QdhmvcController {
         modelAndView.addObject("users", newsIndexList);
 
         return modelAndView;
+    }
+
+    @RequestMapping(value = "/test/detail", method = RequestMethod.GET)
+    public String getNewsDetail() {
+        return "dl-kendo-news-detail/dl-kendo-news-detail";
     }
 }

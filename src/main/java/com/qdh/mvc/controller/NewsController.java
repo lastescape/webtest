@@ -42,4 +42,9 @@ public class NewsController {
         newsDbs = hibernateNewsDbRepository.findAll();
         return newsDbs;
     }
+
+//    @RequestMapping(value = "/detail", method = RequestMethod.GET)
+//    public String getNewsDetail() {
+//        return "dl-kendo-news-detail/dl-kendo-news-detail";
+//    }
 }
