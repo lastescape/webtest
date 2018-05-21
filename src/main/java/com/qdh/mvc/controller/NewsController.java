@@ -6,7 +6,9 @@ import com.qdh.mvc.repositoryofdb.HibernateNewsDbRepository;
 import com.qdh.mvc.repositoryofdb.HibernateProductInfoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,8 +62,21 @@ public class NewsController {
 
     @RequestMapping(value = "/news/pages/{page}", method = RequestMethod.GET)
     @ResponseBody
-    public List<NewsDb> getNewsDetail(@PathVariable int page, @RequestParam(defaultValue = "5") int length) {
+    public List<NewsDb> getNewsPages(@PathVariable int page, @RequestParam(defaultValue = "5") int length) {
         int start_index = (page - 1) * length + 1;
         return hibernateNewsDbRepository.queryForPage(start_index, length);
+    }
+
+    @RequestMapping(value = "/news/detail/{id}", method = RequestMethod.GET)
+    public ModelAndView toNewsDetail(@PathVariable int id) {
+        ModelMap model = new ModelMap();
+        model.addAttribute("newsDetailId", id);
+        return new ModelAndView("dl-kendo-news-detail/dl-kendo-news-detail", model);
+    }
+
+    @RequestMapping(value = "/news/detailcontent/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    public NewsDb getNewsDetail(@PathVariable int id) {
+        return selectNewsByCode(id);
     }
 }

@@ -73,7 +73,7 @@
               </div>
             </div>
           </div>
-          <div id="example">
+          <div id="example" align="right">
             <ul id="pagination"></ul>
           </div>
         </div>
@@ -171,7 +171,7 @@
                 success:function (callback) {
                     $('#news-list').empty();
                     $(callback).each(function (i, value) {
-                        $('#news-list').append('<a href="#" class="list-group-item">' + value.newsTitle + '</a>');
+                        $('#news-list').append('<a href="<%=request.getContextPath()%>/detail/' + value.id + '" class="list-group-item">' + value.newsTitle + '</a>');
                     });
                 },
                 error:function(xhr) {
@@ -212,7 +212,7 @@
                                 success:function (callback) {
                                     $('#news-list').empty();
                                     $(callback).each(function (i, value) {
-                                        $('#news-list').append('<a href="#" class="list-group-item">' + value.newsTitle + '</a>');
+                                        $('#news-list').append('<a href="<%=request.getContextPath()%>/detail/' + value.id + '" class="list-group-item">' + value.newsTitle + '</a>');
                                     });
                                 },
                                 error:function(xhr) {

@@ -81,8 +81,15 @@ public class QdhmvcController {
         return modelAndView;
     }
 
-    @RequestMapping(value = "/detail", method = RequestMethod.GET)
-    public String getNewsDetail() {
-        return "dl-kendo-news-detail/dl-kendo-news-detail";
+//    @RequestMapping(value = "/detail", method = RequestMethod.GET)
+//    public String getNewsDetail() {
+//        return "dl-kendo-news-detail/dl-kendo-news-detail";
+//    }
+
+    @RequestMapping(value = "/detail/{id}", method = RequestMethod.GET)
+    public ModelAndView toNewsDetail(@PathVariable int id) {
+        ModelAndView model = new ModelAndView("dl-kendo-news-detail/dl-kendo-news-detail");
+        model.addObject("newsDetailId", id);
+        return model;
     }
 }
