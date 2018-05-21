@@ -73,6 +73,7 @@
               <div class="list-group" id="news-list">
               </div>
             </div>
+            <ul id="pagination"></ul>
           </div>
         </div>
 
@@ -153,6 +154,9 @@
     <script src="dist/js/common.js"></script>
 
     <script>
+
+
+
     //首页加载时运行
     $(function() {
         $("document").ready(function () {
@@ -231,6 +235,10 @@
                 dataType:'json',
                 success:function(){
                     alert('保存成功');
+                    $(':input','#news_add_form').not(':button, :submit, :reset, :hidden')
+                        .val('')
+                        .removeAttr('checked')
+                        .removeAttr('selected');
                 },
                 error : function() {
                     alert('保存失败');
