@@ -75,7 +75,7 @@
                            $('#news-contents').empty();
                            $('#news-title').html(callback.newsTitle);
                            $('#news-add-date').html(callback.newsAddTime);
-                           $('#news-contents').html(callback.newsDetail.replace(/\r\n/g, '</p><br/><p>'));
+                           $('#news-contents').html(callback.newsDetail.replace(/\r\n/g, '</p><p>'));
                        },
                        error:function(xhr) {
                            alert('error:' + JSON.stringify(xhr));
