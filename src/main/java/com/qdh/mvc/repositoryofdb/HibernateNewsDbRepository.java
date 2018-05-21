@@ -3,6 +3,7 @@ package com.qdh.mvc.repositoryofdb;
 import com.qdh.mvc.common.Utils;
 import com.qdh.mvc.db.NewsDb;
 import com.qdh.mvc.db.ProductInfo;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
@@ -55,5 +56,19 @@ public class HibernateNewsDbRepository {
         } else {
             return new NewsDb();
         }
+    }
+
+    @Transactional(transactionManager = "txManager", readOnly = true)
+    public List<NewsDb> queryForPage(int offset, int length) {
+        List<NewsDb> outputList = null;
+        try {
+            Query query = currectSession().createQuery("from NewsDb nd order by nd.newsAddTime desc ");
+            query.setFirstResult(offset);
+            query.setMaxResults(length);
+            outputList = (List<NewsDb>)query.list();
+        } catch (Exception e) {
+            throw e;
+        }
+        return outputList;
     }
 }

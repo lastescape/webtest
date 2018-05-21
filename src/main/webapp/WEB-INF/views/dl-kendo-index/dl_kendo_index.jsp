@@ -24,7 +24,6 @@
     <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
     <!--[if lt IE 9]><script src="assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
     <script src="assets/js/ie-emulation-modes-warning.js"></script>
-
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -73,6 +72,8 @@
               <div class="list-group" id="news-list">
               </div>
             </div>
+          </div>
+          <div id="example">
             <ul id="pagination"></ul>
           </div>
         </div>
@@ -152,32 +153,136 @@
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="assets/js/ie10-viewport-bug-workaround.js"></script>
     <script src="dist/js/common.js"></script>
+    <script src="dist/js/bootstrap-paginator.js"></script>
+
+
 
     <script>
-
-
-
     //首页加载时运行
+    var totalCount;
     $(function() {
         $("document").ready(function () {
+
             $.ajax({
-                url:'<%=request.getContextPath()%>/news/all',
-                type: 'GET',
-                data: "",
-                contentType:'application/json;charset=utf-8',
-                //返回List或Map，dataType要设置为“json”.
-                dataType:'json',
-                success:function(output){
-                    $(output).each(function (i, value) {
-                        $('#news-list').prepend('<a href="#" class="list-group-item">' + value.newsTitle + '</a>');
+                url:'<%=request.getContextPath()%>/news/pages/1',
+                type:'GET',
+                data:{},
+                dataType:'JSON',
+                success:function (callback) {
+                    $('#news-list').empty();
+                    $(callback).each(function (i, value) {
+                        $('#news-list').append('<a href="#" class="list-group-item">' + value.newsTitle + '</a>');
                     });
                 },
-                error : function(xhr) {
+                error:function(xhr) {
                     alert('error:' + JSON.stringify(xhr));
                 }
-            })
+            });
+
+            $.ajax({
+                url:'<%=request.getContextPath()%>/news/pagecount',
+                type:'GET',
+                data:{},
+                dataType:'TEXT',
+                success:function (callback) {
+                    totalCount = Number(callback);
+
+                    var options = {
+                        currentPage: 1,//当前的请求页面。
+                        totalPages: totalCount ,//一共多少页。
+                        size:"normal",//应该是页眉的大小。
+                        bootstrapMajorVersion: 3,//bootstrap的版本要求。
+                        alignment:"right",
+                        numberOfPages:5,//一页列出多少数据。
+                        itemTexts: function (type, page, current) {//如下的代码是将页眉显示的中文显示我们自定义的中文。
+                            switch (type) {
+                                case "first": return "首页";
+                                case "prev": return "上一页";
+                                case "next": return "下一页";
+                                case "last": return "末页";
+                                case "page": return page;
+                            }
+                        },
+                        onPageClicked: function (event, originalEvent, type, page){//给每个页眉绑定一个事件，其实就是ajax请求，其中page变量为当前点击的页上的数字。
+                            $.ajax({
+                                url:'<%=request.getContextPath()%>/news/pages/' + page,
+                                type:'GET',
+                                data:{},
+                                dataType:'JSON',
+                                success:function (callback) {
+                                    $('#news-list').empty();
+                                    $(callback).each(function (i, value) {
+                                        $('#news-list').append('<a href="#" class="list-group-item">' + value.newsTitle + '</a>');
+                                    });
+                                },
+                                error:function(xhr) {
+                                    alert('error:' + JSON.stringify(xhr));
+                                }
+                            });
+                        }
+                    };
+
+                    $('#pagination').bootstrapPaginator(options);
+
+                },
+                error:function(xhr) {
+                    alert('error:' + JSON.stringify(xhr));
+                }
+            });
+            <%--$.ajax({--%>
+                <%--url:'<%=request.getContextPath()%>/news/all',--%>
+                <%--type: 'GET',--%>
+                <%--data: "",--%>
+                <%--contentType:'application/json;charset=utf-8',--%>
+                <%--//返回List或Map，dataType要设置为“json”.--%>
+                <%--dataType:'json',--%>
+                <%--success:function(output){--%>
+                    <%--$(output).each(function (i, value) {--%>
+                        <%--$('#news-list').prepend('<a href="#" class="list-group-item">' + value.newsTitle + '</a>');--%>
+                    <%--});--%>
+                <%--},--%>
+                <%--error : function(xhr) {--%>
+                    <%--alert('error:' + JSON.stringify(xhr));--%>
+                <%--}--%>
+            <%--});--%>
         });
     });
+
+
+    <%--$('#pagination').bootstrapPaginator({--%>
+        <%--currentPage: 1,//当前的请求页面。--%>
+        <%--totalPages: totalCount ,//一共多少页。--%>
+        <%--size:"normal",//应该是页眉的大小。--%>
+        <%--bootstrapMajorVersion: 3,//bootstrap的版本要求。--%>
+        <%--alignment:"right",--%>
+        <%--numberOfPages:5,//一页列出多少数据。--%>
+        <%--itemTexts: function (type, page, current) {//如下的代码是将页眉显示的中文显示我们自定义的中文。--%>
+            <%--switch (type) {--%>
+                <%--case "first": return "首页";--%>
+                <%--case "prev": return "上一页";--%>
+                <%--case "next": return "下一页";--%>
+                <%--case "last": return "末页";--%>
+                <%--case "page": return page;--%>
+            <%--}--%>
+        <%--},--%>
+        <%--onPageClicked: function (event, originalEvent, type, page){//给每个页眉绑定一个事件，其实就是ajax请求，其中page变量为当前点击的页上的数字。--%>
+            <%--$.ajax({--%>
+                <%--url:'<%=request.getContextPath()%>/news/pages/' + page,--%>
+                <%--type:'GET',--%>
+                <%--data:{},--%>
+                <%--dataType:'JSON',--%>
+                <%--success:function (callback) {--%>
+                    <%--$('#news-list').empty();--%>
+                    <%--$(callback).each(function (i, value) {--%>
+                        <%--$('#news-list').append('<a href="#" class="list-group-item">' + value.newsTitle + '</a>');--%>
+                    <%--});--%>
+                <%--},--%>
+                <%--error:function(xhr) {--%>
+                    <%--alert('error:' + JSON.stringify(xhr));--%>
+                <%--}--%>
+            <%--});--%>
+        <%--}--%>
+    <%--});--%>
 
 
     $(function() {
@@ -211,8 +316,8 @@
                         alert(value);
                     });
                 },
-                error : function(XMLHttpRequest, textStatus, errorThrown) {
-                    alert(errorThrown);
+                error : function(xhr) {
+                    alert('error:' + JSON.stringify(xhr));
                 }
             })
         });
