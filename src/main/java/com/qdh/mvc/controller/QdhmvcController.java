@@ -82,8 +82,11 @@ public class QdhmvcController {
     }
 
     @RequestMapping(value = "/loginPage", method = RequestMethod.GET)
-    public String getNewsDetail() {
-        return "/loginPage";
+    public ModelAndView login(@RequestParam(value = "error", required = false) String error,
+                              @RequestParam(value = "logout", required = false) String logout) {
+        ModelAndView model = new ModelAndView();
+        model.setViewName("loginPage");
+        return model;
     }
 
     @RequestMapping(value = "/detail/{id}", method = RequestMethod.GET)

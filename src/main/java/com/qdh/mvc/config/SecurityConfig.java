@@ -19,7 +19,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .antMatchers("/h5").authenticated()
                 .anyRequest().permitAll()
                 .and()
-                .formLogin()
+                .formLogin().loginPage("/loginPage").usernameParameter("username").passwordParameter("password")
                 .and()
                 .rememberMe()
                 .tokenValiditySeconds(60)
@@ -28,7 +28,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .httpBasic()
                 .and()
                 .csrf()
-                .disable();
+                .disable()
+                ;
     }
 
     @Override

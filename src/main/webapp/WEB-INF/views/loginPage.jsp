@@ -43,15 +43,15 @@
 
 <div class="container">
 
-    <form name="f" class="form-signin" action='/mvc/login' method='POST'>
-        <h2 class="form-signin-heading">Please sign in</h2>
-        <label for="inputEmail" class="sr-only">Email address</label>
-        <input type="text" id="inputEmail" name="username" class="form-control" required autofocus>
-        <label for="inputPassword" class="sr-only">Password</label>
-        <input type="password" id="inputPassword" name="password" class="form-control" placeholder="Password" required>
+    <form name="loginForm" class="form-signin" action='<%=request.getContextPath()%>/loginPage' method='POST'>
+        <h2 class="form-signin-heading">管理员请登录</h2>
+        <label for="inputEmail" class="sr-only">用户名</label>
+        <input type="text" id="inputEmail" name="username" class="form-control" placeholder="用户名" required autofocus>
+        <label for="inputPassword" class="sr-only">密码</label>
+        <input type="password" id="inputPassword" name="password" class="form-control" placeholder="密码" required>
         <div class="checkbox">
             <label>
-                <input type="checkbox" name="remember-me" value="remember-me"> Remember me
+                <input type="checkbox" name="remember-me" value="remember-me"> 记住我
             </label>
         </div>
         <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
