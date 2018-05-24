@@ -10,4 +10,12 @@ public class Utils {
     public static Date currentDate() {
         return new Date();
     }
+
+    public static String makeCosnUrl(String bucketName, String filePath, String fileName) {
+        String output = "";
+        String beforeBuckerName = "https://";
+        String afterBuckerName = ".cos.ap-beijing.myqcloud.com/";
+        output = beforeBuckerName + bucketName + afterBuckerName + filePath + "/" + fileName;
+        return output;
+    }
 }

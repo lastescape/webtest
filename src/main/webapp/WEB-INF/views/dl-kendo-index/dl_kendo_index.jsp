@@ -91,9 +91,13 @@
               <input type="text" class="form-control" id="product_code" name="product_code">
             </div>
             <div class="form-group">
-              <label for="product_image_url">商品图片Url地址</label>
-              <input type="text" class="form-control" id="product_image_url" name="product_comment">
+              <label for="product_image_file">上传商品图片</label>
+              <input type="file" class="form-control" id="product_image_file" name="product_comment">
             </div>
+            <%--<div class="form-group">--%>
+              <%--<label for="product_image_url">商品图片Url地址</label>--%>
+              <%--<input type="text" class="form-control" id="product_image_url" name="product_comment">--%>
+            <%--</div>--%>
             <div class="form-group">
               <label for="product_price">商品价格</label>
               <input type="text" class="form-control" id="product_price" name="product_price">
@@ -229,60 +233,8 @@
                     alert('error:' + JSON.stringify(xhr));
                 }
             });
-            <%--$.ajax({--%>
-                <%--url:'<%=request.getContextPath()%>/news/all',--%>
-                <%--type: 'GET',--%>
-                <%--data: "",--%>
-                <%--contentType:'application/json;charset=utf-8',--%>
-                <%--//返回List或Map，dataType要设置为“json”.--%>
-                <%--dataType:'json',--%>
-                <%--success:function(output){--%>
-                    <%--$(output).each(function (i, value) {--%>
-                        <%--$('#news-list').prepend('<a href="#" class="list-group-item">' + value.newsTitle + '</a>');--%>
-                    <%--});--%>
-                <%--},--%>
-                <%--error : function(xhr) {--%>
-                    <%--alert('error:' + JSON.stringify(xhr));--%>
-                <%--}--%>
-            <%--});--%>
         });
     });
-
-
-    <%--$('#pagination').bootstrapPaginator({--%>
-        <%--currentPage: 1,//当前的请求页面。--%>
-        <%--totalPages: totalCount ,//一共多少页。--%>
-        <%--size:"normal",//应该是页眉的大小。--%>
-        <%--bootstrapMajorVersion: 3,//bootstrap的版本要求。--%>
-        <%--alignment:"right",--%>
-        <%--numberOfPages:5,//一页列出多少数据。--%>
-        <%--itemTexts: function (type, page, current) {//如下的代码是将页眉显示的中文显示我们自定义的中文。--%>
-            <%--switch (type) {--%>
-                <%--case "first": return "首页";--%>
-                <%--case "prev": return "上一页";--%>
-                <%--case "next": return "下一页";--%>
-                <%--case "last": return "末页";--%>
-                <%--case "page": return page;--%>
-            <%--}--%>
-        <%--},--%>
-        <%--onPageClicked: function (event, originalEvent, type, page){//给每个页眉绑定一个事件，其实就是ajax请求，其中page变量为当前点击的页上的数字。--%>
-            <%--$.ajax({--%>
-                <%--url:'<%=request.getContextPath()%>/news/pages/' + page,--%>
-                <%--type:'GET',--%>
-                <%--data:{},--%>
-                <%--dataType:'JSON',--%>
-                <%--success:function (callback) {--%>
-                    <%--$('#news-list').empty();--%>
-                    <%--$(callback).each(function (i, value) {--%>
-                        <%--$('#news-list').append('<a href="#" class="list-group-item">' + value.newsTitle + '</a>');--%>
-                    <%--});--%>
-                <%--},--%>
-                <%--error:function(xhr) {--%>
-                    <%--alert('error:' + JSON.stringify(xhr));--%>
-                <%--}--%>
-            <%--});--%>
-        <%--}--%>
-    <%--});--%>
 
 
     $(function() {
@@ -298,29 +250,27 @@
     $(function() {
         //商品信息保存ajax
         $("#p_add_btn").click(function(){
-            var data=JSON.stringify($("#p_add_form").serializeObject());
-            //data可以有三种形式：
-            //1.var data={"id":"111","user_name":"abc","user_email":"aaa@sina.com"};
-            //2.vat data="id=111&user_name=abc&user_email=aaa@sina.com";
-            //3.var data=$("#form1").serialize();
+
+            //上传图片方法
+            var formData = new FormData($("#p_add_form")[0]);
             $.ajax({
-                url:'<%=request.getContextPath()%>/update',
+                url: '<%=request.getContextPath()%>/update' ,
                 type: 'POST',
-                data: data,
-                contentType:'application/json;charset=utf-8',
-                //返回List或Map，dataType要设置为“json”.
-                dataType:'json',
-                success:function(data){
-                    alert('success');
-                    $(data).each(function (i, value) {
-                        alert(value);
-                    });
+                data: formData,
+                async: false,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function (returndata) {
+                    alert("保存成功");
                 },
-                error : function(xhr) {
+                error: function (xhr) {
                     alert('error:' + JSON.stringify(xhr));
                 }
-            })
+            });
         });
+
+
     });
 
     $(function() {

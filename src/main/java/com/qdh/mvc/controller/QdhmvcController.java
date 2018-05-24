@@ -1,18 +1,25 @@
 package com.qdh.mvc.controller;
 
+import com.qdh.mvc.common.Utils;
 import com.qdh.mvc.db.ProductInfo;
 import com.qdh.mvc.pojo.NewsIndexInfo;
 import com.qdh.mvc.pojo.UserInfo;
+import com.qdh.mvc.qcloud.CosnTool;
 import com.qdh.mvc.repositoryofdb.HibernateProductInfoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.jws.soap.SOAPBinding;
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,13 +55,6 @@ public class QdhmvcController {
         List<ProductInfo> productInfoList = new ArrayList<>();
         productInfoList = hibernateProductInfoRepository.findAll();
         return productInfoList;
-    }
-
-    @RequestMapping(value = "/update", method = RequestMethod.POST)
-    @ResponseBody
-    public ProductInfo insertOrUpdateProduct(@RequestBody ProductInfo productInfo){
-        hibernateProductInfoRepository.insertOrUpdate(productInfo);
-        return productInfo;
     }
 
     @RequestMapping(value = "/select", method = RequestMethod.GET)
@@ -94,5 +94,33 @@ public class QdhmvcController {
         ModelAndView model = new ModelAndView("dl-kendo-news-detail/dl-kendo-news-detail");
         model.addObject("newsDetailId", id);
         return model;
+    }
+
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
+    @ResponseBody
+    public ProductInfo upLoadImage(HttpServletRequest request, @RequestParam("product_comment") CommonsMultipartFile file,
+                                @RequestParam("product_name") String product_name,
+                                @RequestParam("product_code") String product_code,
+                                @RequestParam("product_price") String product_price, ModelMap model) throws Exception {
+
+        CosnTool cosnTool = new CosnTool();
+        cosnTool.init();
+        Boolean uploadResult = false;
+        ProductInfo productInfo = new ProductInfo();
+        try {
+            uploadResult = cosnTool.saveToCosn("kendo-picture-bucket-1256125960", "wx-mini-program-product-pic" , "p_" + product_code + ".jpg", file);
+            if (uploadResult) {
+                productInfo.setProduct_name(product_name);
+                productInfo.setProduct_code(product_code);
+                productInfo.setProduct_price(Double.parseDouble(product_price));
+                productInfo.setProduct_comment(
+                        Utils.makeCosnUrl("kendo-picture-bucket-1256125960", "wx-mini-program-product-pic" ,"p_" + product_code + ".jpg"));
+                hibernateProductInfoRepository.insertOrUpdate(productInfo);
+                return productInfo;
+            }
+        } catch (Exception e) {
+            throw e;
+        }
+        return productInfo;
     }
 }
