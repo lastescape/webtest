@@ -121,6 +121,7 @@ public class QdhmvcController {
         } catch (Exception e) {
             throw e;
         }
+        cosnTool.shutDownClient();
         return productInfo;
     }
 }

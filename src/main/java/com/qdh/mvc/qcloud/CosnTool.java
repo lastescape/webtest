@@ -4,6 +4,9 @@ import com.qcloud.cos.COSClient;
 import com.qcloud.cos.ClientConfig;
 import com.qcloud.cos.auth.BasicCOSCredentials;
 import com.qcloud.cos.auth.COSCredentials;
+import com.qcloud.cos.exception.CosClientException;
+import com.qcloud.cos.exception.CosServiceException;
+import com.qcloud.cos.model.ObjectMetadata;
 import com.qcloud.cos.model.PutObjectRequest;
 import com.qcloud.cos.model.PutObjectResult;
 import com.qcloud.cos.region.Region;
@@ -30,10 +33,29 @@ public class CosnTool {
     }
 
     public boolean saveToCosn(String bucketName, String filePath, String fileName, MultipartFile file) throws IOException {
+
+        String key = fileName;
+
+        String isExist = "";
+        //判断文件在cosn里是否已经存在
+        try {
+            ObjectMetadata objectMetadata = cosClient.getObjectMetadata(bucketName, filePath + "/" + key);
+            isExist = objectMetadata.getETag();
+        } catch (CosServiceException cse) {
+            System.out.println(cse.getMessage());
+        } catch (CosClientException cce) {
+            System.out.println(cce.getMessage());
+        }
+
+        if (!isExist.equals("")) {
+            //文件在cosn中存在
+            cosClient.deleteObject(bucketName, filePath + "/" + key);
+        } else {
+            //文件在cosn中不存在
+        }
         // 简单文件上传, 最大支持 5 GB, 适用于小文件上传, 建议 20 M 以下的文件使用该接口
         // 大文件上传请参照 API 文档高级 API 上传
         // 指定要上传到 COS 上的路径
-        String key = fileName;
         PutObjectRequest putObjectRequest = null;
         putObjectRequest = new PutObjectRequest(bucketName, filePath + "/" + key, multipartToFile(file));
         PutObjectResult putObjectResult = cosClient.putObject(putObjectRequest);
