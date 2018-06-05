@@ -21,6 +21,8 @@ public class ProductInfo {
     private Double product_price;
     @Column(name = "product_comment")
     private String product_comment;
+    @Column(name = "product_div")
+    private String product_div;
 
     public int getId() {
         return id;
@@ -60,5 +62,13 @@ public class ProductInfo {
 
     public void setProduct_comment(String product_comment) {
         this.product_comment = product_comment;
+    }
+
+    public String getProduct_div() {
+        return product_div;
+    }
+
+    public void setProduct_div(String product_div) {
+        this.product_div = product_div;
     }
 }

@@ -67,4 +67,5 @@ public class HibernateProductInfoRepository {
             return new ProductInfo();
         }
     }
+
 }

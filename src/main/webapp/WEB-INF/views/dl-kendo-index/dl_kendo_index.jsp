@@ -83,6 +83,15 @@
           <h1>添加商品信息</h1>
           <form id="p_add_form">
             <div class="form-group">
+              <label for="product_name">商品分类</label>
+
+              <div class="dropdown">
+                <input type="text" class="form-control" data-toggle="dropdown" id="product_div" name="product_div" readonly>
+                <ul class="dropdown-menu" aria-labelledby="product_div" id="product_div_dropbox" >
+                </ul>
+              </div>
+            </div>
+            <div class="form-group">
               <label for="product_name">商品名称</label>
               <input type="text" class="form-control" id="product_name" name="product_name">
             </div>
@@ -233,6 +242,30 @@
                     alert('error:' + JSON.stringify(xhr));
                 }
             });
+
+            $.ajax({
+                url:'<%=request.getContextPath()%>/productDiv',
+                type:'GET',
+                data:{},
+                contentType:'application/json;charset=utf-8',
+                dataType:'JSON',
+                success:function (callback) {
+                    $('#product_div_dropbox').empty();
+                    $(callback).each(function (i, value) {
+                        $('#product_div_dropbox').
+                        append('<li><a href="#">' + value.product_div_name + '</a></li>');
+                    });
+                    $("#product_div_dropbox > li > a").on('click', function(){
+                        $("#product_div").val($(this).text());
+                    });
+
+                },
+                error:function(xhr) {
+                    alert('error:' + JSON.stringify(xhr));
+                }
+            });
+
+
         });
     });
 
@@ -263,6 +296,11 @@
                 processData: false,
                 success: function (returndata) {
                     alert("保存成功");
+                    $(':input','#p_add_form')
+                        .not(':button,:submit,:reset,:hidden')
+                        .val('')  //将input元素的value设为空值
+                        .removeAttr('checked')
+                        .removeAttr('checked')
                 },
                 error: function (xhr) {
                     alert('error:' + JSON.stringify(xhr));
