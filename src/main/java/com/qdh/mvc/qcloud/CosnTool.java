@@ -10,6 +10,7 @@ import com.qcloud.cos.model.ObjectMetadata;
 import com.qcloud.cos.model.PutObjectRequest;
 import com.qcloud.cos.model.PutObjectResult;
 import com.qcloud.cos.region.Region;
+import com.qdh.mvc.common.Utils;
 import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
@@ -60,6 +61,33 @@ public class CosnTool {
         putObjectRequest = new PutObjectRequest(bucketName, filePath + "/" + key, multipartToFile(file));
         PutObjectResult putObjectResult = cosClient.putObject(putObjectRequest);
         String eTag = putObjectResult.getETag();
+        return true;
+    }
+
+    public boolean deleteFromCosn(String picUrl) throws IOException {
+        String temp = Utils.getCosnInfoFromUrl(picUrl);
+        String bucketName = temp.split(":_:")[0];
+        String filePath = temp.split(":_:")[1];
+        String fileName = temp.split(":_:")[2];
+        String key = fileName;
+
+        String isExist = "";
+        //判断文件在cosn里是否已经存在
+        try {
+            ObjectMetadata objectMetadata = cosClient.getObjectMetadata(bucketName, filePath + "/" + key);
+            isExist = objectMetadata.getETag();
+        } catch (CosServiceException cse) {
+            System.out.println(cse.getMessage());
+        } catch (CosClientException cce) {
+            System.out.println(cce.getMessage());
+        }
+
+        if (!isExist.equals("")) {
+            //文件在cosn中存在
+            cosClient.deleteObject(bucketName, filePath + "/" + key);
+        } else {
+            //文件在cosn中不存在
+        }
         return true;
     }
 

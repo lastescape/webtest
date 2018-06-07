@@ -48,8 +48,8 @@
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
             <li class="active"><a href="#home" data-toggle="tab">首页</a></li>
-            <li><a href="#about" data-toggle="tab">关于我们</a></li>
-            <li><a href="#kendo-news" data-toggle="tab">剑道NEWS</a></li>
+            <li><a href="#about" data-toggle="tab">添加商品</a></li>
+            <li><a href="#kendo-news" data-toggle="tab">编辑商品列表</a></li>
             <li><a href="#member-show" data-toggle="tab">会员风采</a></li>
             <li><a href="#schedule" data-toggle="tab">课程安排</a></li>
             <li><a href="#equipment-show" data-toggle="tab">装备展示</a></li>
@@ -115,6 +115,33 @@
           </form>
         </div>
 
+
+        <div id="kendo-news" class="tab-pane">
+          <table class="table table-striped">
+            <thead>
+            <tr>
+              <th>商品条码</th>
+              <th>商品名称</th>
+              <th>商品价格</th>
+            </tr>
+            </thead>
+            <tbody id="product_list_body">
+            <tr>
+              <td>1</td>
+              <td>Item 1</td>
+              <td>$1</td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td>Item 2</td>
+              <td>$2</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+
+
+
         <!-- Main component for a primary marketing message or call to action -->
         <div id="bbs-link" class="tab-pane">
           <h1>添加新闻信息</h1>
@@ -154,6 +181,27 @@
         </div>
 
       </div>
+
+      <!-- 模态框（Modal） -->
+      <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+              <h4 class="modal-title" id="myModalLabel">确定删除下面的商品</h4>
+            </div>
+            <div class="modal-body">
+              <p id="to_delete_product_code"></p>
+              <p id="to_delete_product_name"></p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+              <button type="button" class="btn btn-primary" id="sure_delete_product">提交更改</button>
+            </div>
+          </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+      </div>
+
     </div> <!-- /container -->
 
 
@@ -171,6 +219,32 @@
 
 
     <script>
+
+    var getAllProduct = function () {
+        $.ajax({
+            url: '<%=request.getContextPath()%>/allProduct',
+            type: 'GET',
+            data: {},
+            contentType: 'application/json;charset=utf-8',
+            dataType: 'JSON',
+            success: function (callback) {
+                $('#product_list_body').empty();
+                $(callback).each(function (i, value) {
+                    $('#product_list_body').append('<tr><td>' + value.product_code + '</td><td>' + value.product_name + '</td><td>' + value.product_price + '</td></tr>');
+                });
+                $("#product_list_body > tr").on('click', function () {
+                    $("#to_delete_product_code").text($(this).find('td:first').text())
+                    $("#to_delete_product_name").text($(this).find('td:eq(1)').text())
+                    $("#myModal").modal('show');
+                });
+
+            },
+            error: function (xhr) {
+                alert('error:' + JSON.stringify(xhr));
+            }
+        });
+    }
+
     //首页加载时运行
     var totalCount;
     $(function() {
@@ -265,6 +339,7 @@
                 }
             });
 
+            getAllProduct();
 
         });
     });
@@ -365,7 +440,29 @@
         });
     });
 
-    </script>
+    $(function() {
+       //删除商品ajax
+        $("#sure_delete_product").click(function(){
+            $.ajax({
+                url:'<%=request.getContextPath()%>/deleteProduct?deleteCode=' + $("#to_delete_product_code").html(),
+                type:'GET',
+                data:{},
+                contentType:'application/json;charset=utf-8',
+                dataType:false,
+                success:function (callback) {
+                    if (callback == 'success') {
+                        alert("删除成功");
+                    }
+                    getAllProduct();
+                    $("#myModal").modal('hide');
+                },
+                error:function(xhr) {
+                    alert('error:' + JSON.stringify(xhr));
+                }
+            });
+        })
+    });
 
+    </script>
   </body>
 </html>

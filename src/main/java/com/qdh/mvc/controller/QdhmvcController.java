@@ -179,4 +179,21 @@ public class QdhmvcController {
         return hibernateProductDivRepository.insertDiv(divName);
     }
 
+    @RequestMapping(value = "/deleteProduct", method = RequestMethod.GET)
+    @ResponseBody
+    public String deleteProduct(@RequestParam("deleteCode") String code) throws Exception {
+        ProductInfo productInfo = hibernateProductInfoRepository.findProductByCode(code);
+        String productImageUrl = productInfo.getProduct_comment();
+        CosnTool cosnTool = new CosnTool();
+        cosnTool.init();
+        try {
+            cosnTool.deleteFromCosn(productImageUrl);
+        } catch (Exception e) {
+            throw e;
+        }
+        cosnTool.shutDownClient();
+        hibernateProductInfoRepository.deleteProductByCode(productInfo.getProduct_code());
+        return "success";
+    }
+
 }

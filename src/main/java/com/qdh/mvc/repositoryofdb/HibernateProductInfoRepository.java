@@ -1,6 +1,7 @@
 package com.qdh.mvc.repositoryofdb;
 
 import com.qdh.mvc.db.ProductInfo;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
@@ -67,5 +68,16 @@ public class HibernateProductInfoRepository {
             return new ProductInfo();
         }
     }
+
+    @Transactional(transactionManager = "txManager")
+    public String deleteProductByCode(String code) {
+        String hql = "delete ProductInfo p where p.product_code=?";
+        Query query = currectSession().createQuery(hql);
+        query.setString(0, code);
+        boolean issuccess = (query.executeUpdate()>0);
+
+        return issuccess?"success":"fail";
+    }
+
 
 }
