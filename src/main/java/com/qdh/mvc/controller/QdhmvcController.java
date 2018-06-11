@@ -9,6 +9,7 @@ import com.qdh.mvc.pojo.UserInfo;
 import com.qdh.mvc.qcloud.CosnTool;
 import com.qdh.mvc.repositoryofdb.HibernateProductDivRepository;
 import com.qdh.mvc.repositoryofdb.HibernateProductInfoRepository;
+import com.qdh.mvc.services.HttpTool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Controller;
@@ -196,4 +197,13 @@ public class QdhmvcController {
         return "success";
     }
 
+    @Autowired
+    private HttpTool httpToolUtils;
+
+    @RequestMapping(value = "/userLogin")
+    @ResponseBody
+    public String userLogin(String code, HttpServletRequest request) throws Exception {
+        String ip = Utils.getIpAddr(request);
+        return ip + "<--------->" + httpToolUtils.responseByGet("https://qidonghao.cn:8080/mvc/allProductByGroup");
+    }
 }
